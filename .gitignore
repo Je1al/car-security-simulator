@@ -12,3 +12,4 @@ logs/
 
 # OS
 .DS_Store
+.idea/car-security-simulator.iml
