@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+
+# Logs & generated data
+logs/
+*.csv
+*.json
+
+# OS
+.DS_Store
