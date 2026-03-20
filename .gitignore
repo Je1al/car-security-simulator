@@ -2,9 +2,7 @@
 __pycache__/
 *.pyc
 
-# IDE
-.idea/
-
+.idea
 # Logs & generated data
 logs/
 *.csv
@@ -12,4 +10,3 @@ logs/
 
 # OS
 .DS_Store
-.idea/car-security-simulator.iml
