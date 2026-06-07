@@ -8,6 +8,7 @@ metrics can be compared across attack types.
 
 from __future__ import annotations
 
+from carsec.scenarios import ids_demo, uds_demo
 from carsec.scenarios.runner import SimulationRunner
 from carsec.telemetry.logger import C
 
@@ -111,6 +112,7 @@ def inject_secure(verbose: bool = False) -> SimulationRunner:
     return r
 
 
+# Core CAN attack scenarios (each returns a SimulationRunner used by full_demo).
 SCENARIOS = {
     "normal-secure": normal_secure,
     "normal-insecure": normal_insecure,
@@ -121,6 +123,9 @@ SCENARIOS = {
     "inject-insecure": inject_insecure,
     "inject-secure": inject_secure,
 }
+
+# All runnable scenarios, including the UDS and IDS demos.
+ALL = {**SCENARIOS, **uds_demo.SCENARIOS, **ids_demo.SCENARIOS}
 
 
 def full_demo(verbose: bool = False) -> None:

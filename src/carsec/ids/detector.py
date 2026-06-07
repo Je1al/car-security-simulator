@@ -94,14 +94,17 @@ class IDS:
         # state and metrics updates are serialised here.
         self._lock = threading.Lock()
 
-    def observe(self, msg: CANMessage) -> bool:
+    def observe(self, msg: CANMessage, now: float | None = None) -> bool:
         """
         Inspect a frame; return True if flagged as anomalous.
 
         Updates the confusion matrix against ``msg.is_attack`` and (optionally)
-        emits an ALERT log event on the first detector that fires.
+        emits an ALERT log event on the first detector that fires.  ``now`` is the
+        arrival time (defaults to wall clock); pass it explicitly for
+        deterministic, replayable benchmarks.
         """
-        now = time.time()
+        if now is None:
+            now = time.time()
         with self._lock:
             flagged_by = None
             reason = ""

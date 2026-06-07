@@ -27,7 +27,11 @@ def _menu() -> None:
         ("6", "Tamper Attack (SECURE — defeated)", "tamper-secure"),
         ("7", "Injection Attack (INSECURE — succeeds)", "inject-insecure"),
         ("8", "Injection Attack (SECURE — defeated)", "inject-secure"),
-        ("9", "Full Demo (all scenarios + comparison)", "all"),
+        ("9", "Full Demo (all CAN scenarios + comparison)", "all"),
+        ("u", "UDS Security Access — WEAK seed-key (attack succeeds)", "uds-weak"),
+        ("U", "UDS Security Access — HMAC seed-key (attack defeated)", "uds-secure"),
+        ("d", "Denial of Service — bus flooding (IDS detects)", "dos"),
+        ("b", "IDS Benchmark — precision/recall on labelled trace", "ids-benchmark"),
     ]
     print(f"{C.CYAN}{C.BOLD}{BANNER}{C.RESET}")
     while True:
@@ -44,7 +48,7 @@ def _menu() -> None:
         if match == "all":
             library.full_demo()
         elif match:
-            library.SCENARIOS[match]()
+            library.ALL[match]()
         else:
             print(f"  {C.YELLOW}unknown option {choice!r}{C.RESET}")
         input(f"\n  {C.DIM}Press Enter to continue …{C.RESET}")
@@ -73,7 +77,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.list:
         print("Available scenarios:")
-        for name in library.SCENARIOS:
+        for name in library.ALL:
             print(f"  {name}")
         print("  all")
         return 0
@@ -89,7 +93,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.scenario == "all":
         library.full_demo(verbose=args.verbose)
         return 0
-    fn = library.SCENARIOS.get(args.scenario)
+    fn = library.ALL.get(args.scenario)
     if fn is None:
         print(f"unknown scenario {args.scenario!r}; try --list")
         return 1
