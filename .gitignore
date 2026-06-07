@@ -1,12 +1,24 @@
 # Python
 __pycache__/
 *.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
 
-.idea
-# Logs & generated data
+# IDE
+.idea/
+.vscode/
+
+# Generated run artifacts
 logs/
-*.csv
-*.json
 
 # OS
 .DS_Store
