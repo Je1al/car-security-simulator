@@ -11,7 +11,7 @@ import time
 from typing import Optional
 
 from carsec.attacks.base import Attacker
-from carsec.can.bus import VirtualCANBus
+from carsec.can.bus import CANBus, VirtualCANBus
 from carsec.can.identifiers import MSG_ID
 from carsec.ecu.brake import BrakeECU
 from carsec.ecu.engine import EngineECU
@@ -31,10 +31,11 @@ class SimulationRunner:
         log_prefix: str = "session",
         logger: Optional[EventLogger] = None,
         with_ids: bool = False,
+        bus: Optional[CANBus] = None,
     ) -> None:
         self.secure = secure
         self.logger = logger or EventLogger(prefix=log_prefix, console=True, verbose=verbose)
-        self.bus = VirtualCANBus(delay_ms=delay_ms, logger=self.logger)
+        self.bus = bus or VirtualCANBus(delay_ms=delay_ms, logger=self.logger)
         self.attacker = Attacker("ATTACKER", self.bus, self.logger)
 
         self.ids: Optional[IDS] = None

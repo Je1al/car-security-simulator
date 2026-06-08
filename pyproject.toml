@@ -57,6 +57,9 @@ carsec = "carsec.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+carsec = ["data/*.dbc"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

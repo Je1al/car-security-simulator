@@ -129,6 +129,7 @@ class VirtualCANBus(CANBus):
         sender: str,
         exclude_sender: bool,
         injected: bool,
+        mirror: bool = True,
     ) -> None:
         if self.delay_ms > 0:
             import time
@@ -154,6 +155,12 @@ class VirtualCANBus(CANBus):
             except Exception:  # a faulty observer must not break the bus
                 pass
 
+        # Hardware backends mirror locally-originated frames onto the real wire;
+        # frames that arrived *from* the wire are delivered with mirror=False to
+        # avoid an echo loop.
+        if mirror:
+            self._mirror(msg, injected)
+
         if self._logger is not None:
             if injected:
                 self._logger.log_event(
@@ -164,6 +171,9 @@ class VirtualCANBus(CANBus):
                 )
             else:
                 self._logger.log_tx(msg, sender)
+
+    def _mirror(self, msg: CANMessage, injected: bool) -> None:
+        """Hook for hardware backends to forward a frame to the real wire."""
 
     def stats(self) -> dict[str, int]:
         with self._lock:
@@ -180,19 +190,21 @@ def open_bus(
     channel: Optional[str] = None,
     delay_ms: float = 0.0,
     logger=None,
+    interface: str = "socketcan",
 ) -> CANBus:
     """
     Factory that returns a bus for the requested backend.
 
-    ``virtual``   pure in-process broadcast bus (default, no dependencies).
-    ``socketcan`` Linux SocketCAN via python-can (requires the ``hardware`` extra
-                  and a ``vcan``/``can`` interface).  Falls back with a clear
-                  error if python-can or the interface is unavailable.
+    ``virtual``    pure in-process broadcast bus (default, no dependencies).
+    ``socketcan``  real/virtual CAN via python-can (requires the ``hardware``
+                   extra). ``interface`` selects the python-can interface —
+                   ``"socketcan"`` (Linux ``vcan``/``can``) or the cross-platform
+                   ``"virtual"`` interface for development and CI.
     """
     if backend == "virtual":
         return VirtualCANBus(name=channel or "vcan0", delay_ms=delay_ms, logger=logger)
     if backend == "socketcan":
         from carsec.can.socketcan import SocketCANBus
 
-        return SocketCANBus(channel=channel or "vcan0", logger=logger)
+        return SocketCANBus(channel=channel or "vcan0", interface=interface, logger=logger)
     raise ValueError(f"unknown CAN backend: {backend!r}")
