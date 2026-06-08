@@ -22,14 +22,17 @@ as taps.
 
 from __future__ import annotations
 
+import contextlib
 import queue
 import threading
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from typing import Callable
 
 from carsec.can.message import CANMessage
 
-Tap = Callable[[CANMessage], None]
+# A tap receives a copy of every frame; its return value is ignored (the IDS
+# returns a bool, plain sniffers return None).
+Tap = Callable[[CANMessage], object]
 
 
 class CANBus(ABC):
@@ -38,7 +41,7 @@ class CANBus(ABC):
     name: str
 
     @abstractmethod
-    def register_node(self, name: str) -> "queue.Queue[CANMessage]":
+    def register_node(self, name: str) -> queue.Queue[CANMessage]:
         """Register a receiving node and return its personal inbox queue."""
 
     @abstractmethod
@@ -88,7 +91,7 @@ class VirtualCANBus(CANBus):
 
     # ── Registration ──────────────────────────────────────────────────────────
 
-    def register_node(self, name: str) -> "queue.Queue[CANMessage]":
+    def register_node(self, name: str) -> queue.Queue[CANMessage]:
         with self._lock:
             if name not in self._listeners:
                 self._listeners[name] = queue.Queue()
@@ -150,10 +153,8 @@ class VirtualCANBus(CANBus):
             inbox.put(msg.clone())
 
         for tap in taps:
-            try:
+            with contextlib.suppress(Exception):  # a faulty observer must not break the bus
                 tap(msg.clone())
-            except Exception:  # a faulty observer must not break the bus
-                pass
 
         # Hardware backends mirror locally-originated frames onto the real wire;
         # frames that arrived *from* the wire are delivered with mirror=False to
@@ -187,7 +188,7 @@ class VirtualCANBus(CANBus):
 
 def open_bus(
     backend: str = "virtual",
-    channel: Optional[str] = None,
+    channel: str | None = None,
     delay_ms: float = 0.0,
     logger=None,
     interface: str = "socketcan",

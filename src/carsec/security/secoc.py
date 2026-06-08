@@ -119,10 +119,7 @@ class SecOCLayer:
 
         # Only consult / advance the freshness counter once the MAC is trusted:
         # an attacker must not be able to burn freshness values to cause a DoS.
-        if mac_ok:
-            fv_ok = self._freshness.is_fresh(msg.arbitration_id, msg.freshness)
-        else:
-            fv_ok = False
+        fv_ok = self._freshness.is_fresh(msg.arbitration_id, msg.freshness) if mac_ok else False
 
         accepted = mac_ok and ts_ok and fv_ok
         if accepted:

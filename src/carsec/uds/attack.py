@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass
-from typing import Optional
 
 from carsec.uds.security_access import HmacSeedKey, WeakXorSeedKey
 
@@ -23,7 +22,7 @@ from carsec.uds.security_access import HmacSeedKey, WeakXorSeedKey
 @dataclass
 class BruteForceResult:
     recovered: bool
-    secret: Optional[int]
+    secret: int | None
     tries: int
     seconds: float
 

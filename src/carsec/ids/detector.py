@@ -117,7 +117,7 @@ class IDS:
 
             is_alert = flagged_by is not None
             self._score(is_alert, msg.is_attack)
-            if is_alert:
+            if flagged_by is not None:
                 self.alerts.append((msg.clone(), flagged_by, reason))
 
         # Log outside the lock to avoid holding it across I/O.

@@ -87,7 +87,7 @@ class CANMessage:
         )
 
     @classmethod
-    def from_bytes(cls, raw: bytes, sender: str = "UNKNOWN") -> "CANMessage":
+    def from_bytes(cls, raw: bytes, sender: str = "UNKNOWN") -> CANMessage:
         if len(raw) < WIRE_SIZE:
             raise ValueError(f"frame too short: {len(raw)} < {WIRE_SIZE}")
         arb, dlc, padded, ts, fresh, mac = struct.unpack(_WIRE_FMT, raw[:WIRE_SIZE])
@@ -100,7 +100,7 @@ class CANMessage:
             sender=sender,
         )
 
-    def clone(self) -> "CANMessage":
+    def clone(self) -> CANMessage:
         """Deep copy (bytes are immutable but we copy to be explicit)."""
         return CANMessage(
             arbitration_id=self.arbitration_id,

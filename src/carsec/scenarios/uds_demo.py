@@ -53,8 +53,10 @@ def uds_weak(verbose: bool = False) -> None:
     _info(f"sniffed one tester exchange: seed={seed.hex()} key={key.hex()}")
 
     res = recover_weak_secret(seed, key)
-    if res.recovered:
-        _err(f"secret recovered: 0x{res.secret:04X} in {res.tries} tries / {res.seconds * 1000:.2f} ms")
+    if not res.recovered or res.secret is None:
+        _err("secret not recovered (unexpected)")
+        return
+    _err(f"secret recovered: 0x{res.secret:04X} in {res.tries} tries / {res.seconds * 1000:.2f} ms")
 
     victim = UdsServer(algorithm=WeakXorSeedKey(secret))
     client = UdsClient(DirectTransport(victim))

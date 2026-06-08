@@ -12,8 +12,6 @@ frequency detector is for).
 
 from __future__ import annotations
 
-from typing import Optional
-
 from carsec.can.identifiers import (
     MSG_ID,
     decode_brake_pressure,
@@ -41,7 +39,7 @@ class RuleDetector:
 
     name = "rule"
 
-    def inspect(self, msg: CANMessage, now: float = 0.0) -> Optional[str]:
+    def inspect(self, msg: CANMessage, now: float = 0.0) -> str | None:
         arb = msg.arbitration_id
 
         if arb not in _KNOWN_IDS:
@@ -50,12 +48,14 @@ class RuleDetector:
         if msg.dlc != _KNOWN_IDS[arb] and msg.dlc != 0:
             return f"unexpected DLC {msg.dlc} for {msg.name} (want {_KNOWN_IDS[arb]})"
 
-        if arb == MSG_ID["ENGINE_RPM"] and msg.dlc >= 2:
-            if decode_rpm(msg.data) > _RPM_MAX:
-                return f"implausible RPM {decode_rpm(msg.data)} > {_RPM_MAX}"
+        if arb == MSG_ID["ENGINE_RPM"] and msg.dlc >= 2 and decode_rpm(msg.data) > _RPM_MAX:
+            return f"implausible RPM {decode_rpm(msg.data)} > {_RPM_MAX}"
 
-        if arb == MSG_ID["BRAKE_PRESS"] and msg.dlc >= 2:
-            if decode_brake_pressure(msg.data) > _BRAKE_BAR_MAX:
-                return f"implausible brake pressure {decode_brake_pressure(msg.data):.1f} bar"
+        if (
+            arb == MSG_ID["BRAKE_PRESS"]
+            and msg.dlc >= 2
+            and decode_brake_pressure(msg.data) > _BRAKE_BAR_MAX
+        ):
+            return f"implausible brake pressure {decode_brake_pressure(msg.data):.1f} bar"
 
         return None

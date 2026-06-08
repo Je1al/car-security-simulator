@@ -23,6 +23,7 @@ behaves identically for development and CI on any OS.
 
 from __future__ import annotations
 
+import contextlib
 import threading
 
 from carsec.can.bus import VirtualCANBus
@@ -96,7 +97,5 @@ class SocketCANBus(VirtualCANBus):
 
     def close(self) -> None:
         self._rx_running = False
-        try:
+        with contextlib.suppress(Exception):  # pragma: no cover
             self._pycan_bus.shutdown()
-        except Exception:  # pragma: no cover
-            pass

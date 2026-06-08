@@ -16,7 +16,7 @@ gracefully without the dependency.
 from __future__ import annotations
 
 import os
-from typing import Optional
+from typing import Any
 
 from carsec.can.identifiers import (
     MSG_ID,
@@ -50,9 +50,9 @@ _FALLBACK = {
 class DbcDatabase:
     """Decode CAN frames into named signals from a DBC (or the fallback table)."""
 
-    def __init__(self, path: Optional[str] = None) -> None:
+    def __init__(self, path: str | None = None) -> None:
         self.path = os.path.normpath(path or DEFAULT_DBC)
-        self._db = None
+        self._db: Any = None
         if _HAS_CANTOOLS and os.path.exists(self.path):
             self._db = _cantools.database.load_file(self.path)
 

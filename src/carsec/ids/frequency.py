@@ -15,7 +15,6 @@ of valid frames and flooding of unknown IDs that the rule detector also sees.
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Optional
 
 from carsec.can.message import CANMessage
 
@@ -39,7 +38,7 @@ class FrequencyDetector:
         self._period: dict[int, float] = {}
         self._count: dict[int, int] = defaultdict(int)
 
-    def inspect(self, msg: CANMessage, now: float) -> Optional[str]:
+    def inspect(self, msg: CANMessage, now: float) -> str | None:
         # ``now`` is the *arrival* time supplied by the IDS, not the frame's
         # embedded timestamp — a passive monitor times frames as it sees them, so
         # a replayed frame (carrying a stale timestamp) still shows a short gap.

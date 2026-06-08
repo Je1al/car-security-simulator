@@ -17,7 +17,6 @@ import json
 import os
 import threading
 import time
-from typing import Optional
 
 from carsec.can.message import CANMessage
 
@@ -79,7 +78,7 @@ class EventRecord:
         level: str,
         actor: str,
         message: str,
-        msg: Optional[CANMessage] = None,
+        msg: CANMessage | None = None,
     ) -> None:
         self.timestamp = time.time()
         self.level = level
@@ -170,7 +169,7 @@ class EventLogger:
         level: str,
         actor: str,
         message: str,
-        msg: Optional[CANMessage] = None,
+        msg: CANMessage | None = None,
     ) -> None:
         self._record(EventRecord(level, actor, message, msg))
 

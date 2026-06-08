@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import math
 from collections import Counter, defaultdict
-from typing import Optional
 
 from carsec.can.message import CANMessage
 
@@ -45,7 +44,7 @@ class EntropyDetector:
         self._baseline: dict[int, float] = {}
         self._count: dict[int, int] = defaultdict(int)
 
-    def inspect(self, msg: CANMessage, now: float = 0.0) -> Optional[str]:
+    def inspect(self, msg: CANMessage, now: float = 0.0) -> str | None:
         arb = msg.arbitration_id
         ent = shannon_entropy(msg.data)
         self._count[arb] += 1

@@ -14,7 +14,6 @@ A transport turns a request byte string into the server's response byte string.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from carsec.can.identifiers import MSG_ID
 from carsec.can.message import CANMessage
@@ -57,7 +56,7 @@ class IsoTpTransport(UdsTransport):
         # Client → server.
         req_frames = isotp.segment(payload)
         reasm = isotp.Reassembler()
-        server_message: Optional[bytes] = None
+        server_message: bytes | None = None
         for f in req_frames:
             self._emit(MSG_ID["DIAG_REQUEST"], f, self._sender)
             result = reasm.push(f)
@@ -70,7 +69,7 @@ class IsoTpTransport(UdsTransport):
         # Server → client.
         resp_frames = isotp.segment(response)
         reasm2 = isotp.Reassembler()
-        client_message: Optional[bytes] = None
+        client_message: bytes | None = None
         for f in resp_frames:
             self._emit(MSG_ID["DIAG_RESPONSE"], f, self.server.name)
             result = reasm2.push(f)

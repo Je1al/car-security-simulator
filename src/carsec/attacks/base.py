@@ -14,7 +14,6 @@ import os
 import random
 import threading
 import time
-from typing import Optional
 
 from carsec.can.bus import CANBus
 from carsec.can.identifiers import (
@@ -101,7 +100,7 @@ class Attacker:
 
     # ── Attack 2: Tamper ───────────────────────────────────────────────────────
 
-    def tamper(self, msg_name: str = "ENGINE_RPM", new_data: Optional[bytes] = None) -> bool:
+    def tamper(self, msg_name: str = "ENGINE_RPM", new_data: bytes | None = None) -> bool:
         """
         Modify a captured frame's payload and re-transmit.
 
@@ -138,7 +137,7 @@ class Attacker:
 
     # ── Attack 3: Injection ────────────────────────────────────────────────────
 
-    def inject(self, arbitration_id: Optional[int] = None, data: Optional[bytes] = None) -> bool:
+    def inject(self, arbitration_id: int | None = None, data: bytes | None = None) -> bool:
         """
         Fabricate and inject a brand-new frame.
 

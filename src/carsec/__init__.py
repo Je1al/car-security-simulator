@@ -24,7 +24,7 @@ Educational / defensive use only.  See README and docs/threat-model.md.
 __version__ = "0.2.0"
 __author__ = "Je1al"
 
-from carsec.can.message import CANMessage
 from carsec.can.identifiers import MSG_ID, MSG_NAME
+from carsec.can.message import CANMessage
 
 __all__ = ["CANMessage", "MSG_ID", "MSG_NAME", "__version__"]

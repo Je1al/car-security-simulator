@@ -8,7 +8,6 @@ and (optionally) the IDS, so all statistics come from a single source of truth.
 from __future__ import annotations
 
 import time
-from typing import Optional
 
 from carsec.attacks.base import Attacker
 from carsec.can.bus import CANBus, VirtualCANBus
@@ -29,16 +28,16 @@ class SimulationRunner:
         delay_ms: float = 0.0,
         verbose: bool = False,
         log_prefix: str = "session",
-        logger: Optional[EventLogger] = None,
+        logger: EventLogger | None = None,
         with_ids: bool = False,
-        bus: Optional[CANBus] = None,
+        bus: CANBus | None = None,
     ) -> None:
         self.secure = secure
         self.logger = logger or EventLogger(prefix=log_prefix, console=True, verbose=verbose)
         self.bus = bus or VirtualCANBus(delay_ms=delay_ms, logger=self.logger)
         self.attacker = Attacker("ATTACKER", self.bus, self.logger)
 
-        self.ids: Optional[IDS] = None
+        self.ids: IDS | None = None
         if with_ids:
             self.ids = IDS(self.logger)
             self.bus.add_tap(self.ids.observe)

@@ -47,7 +47,7 @@ class Visualizer:
     def available(self) -> bool:
         return _HAS_MPL
 
-    def generate_all(self, logger: "EventLogger", prefix: str = "sim") -> list[str]:
+    def generate_all(self, logger: EventLogger, prefix: str = "sim") -> list[str]:
         if not _HAS_MPL:
             print("  [hint] install matplotlib (pip install carsec[viz]) for charts")
             return []
@@ -61,7 +61,7 @@ class Visualizer:
                 print(f"  [warn] chart failed: {exc}")
         return paths
 
-    def _timeline(self, logger: "EventLogger", prefix: str) -> str:
+    def _timeline(self, logger: EventLogger, prefix: str) -> str:
         events = logger.events
         if not events:
             return ""
@@ -103,7 +103,7 @@ class Visualizer:
         plt.close(fig)
         return path
 
-    def _summary_bars(self, logger: "EventLogger", prefix: str) -> str:
+    def _summary_bars(self, logger: EventLogger, prefix: str) -> str:
         s = logger.summary()
         labels = ["TX", "Accept", "Reject", "Injected", "Alerts"]
         values = [s["tx"], s["accepted"], s["rejected"], s["injected"], s["alerts"]]
